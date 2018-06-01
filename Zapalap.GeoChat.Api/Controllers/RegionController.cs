@@ -20,8 +20,7 @@ namespace Zapalap.GeoChat.Api.Controllers
             ActorSystem = actorSystem;
         }
 
-        [HttpGet]
-        [Route("{region}/users")]
+        [HttpGet("{region}/users")]
         public async Task<IActionResult> GetUserList(int region)
         {
             var message = new ListUsers();

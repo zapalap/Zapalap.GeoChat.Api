@@ -6,6 +6,7 @@ using Akka.Actor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Zapalap.GeoChat.Api.AkkaActorSystem.Messages;
+using Zapalap.GeoChat.Api.Models;
 
 namespace Zapalap.GeoChat.Api.Controllers
 {
@@ -20,8 +21,7 @@ namespace Zapalap.GeoChat.Api.Controllers
             ActorSystem = actorSystem;
         }
 
-        [HttpPost]
-        [Route("regions/{region}")]
+        [HttpPost("regions/{region}")]
         public IActionResult PostUsers(string userName, int region)
         {
             var message = new NewRegionUser(userName);
@@ -31,11 +31,10 @@ namespace Zapalap.GeoChat.Api.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        [Route("{userName}/regions/{region}/messages/{text}")]
-        public IActionResult PostMessage(string userName, int region, [FromBody]string text)
+        [HttpPost("{userName}/regions/{region}/shouts")]
+        public IActionResult Shout([FromRoute]string userName, [FromRoute]int region, [FromBody]ShoutModel shout)
         {
-            var message = new SendText(text);
+            var message = new SendText(shout.Text);
             var selection = ActorSystem.ActorSelection($"/user/RegionMaster:{region}/User:{userName}");
             selection.Tell(message);
 
