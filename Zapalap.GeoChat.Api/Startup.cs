@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Akka;
+using Akka.Actor;
+using Zapalap.GeoChat.Api.AkkaActorSystem.Actors;
 
 namespace Zapalap.GeoChat.Api
 {
@@ -24,6 +27,15 @@ namespace Zapalap.GeoChat.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            var geoChatActorSystem = ActorSystem.Create("GeoChat");
+
+            for (int i = 1; i <= 12; i++)
+            {
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster(i)), $"RegionMaster:{i}");
+            }
+
+            services.AddSingleton(geoChatActorSystem);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
