@@ -1,0 +1,13 @@
+POST /api/users/regions/1?userName=test1 HTTP/1.1
+Host:localhost:54168
+
+###
+
+POST /api/users/test1/regions/1/shouts
+Host:localhost:54168
+Content-Type: application/json
+
+{
+    "Text":"Hi, So nice to meet you!"
+}
+
