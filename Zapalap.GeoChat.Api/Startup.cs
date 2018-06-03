@@ -34,7 +34,7 @@ namespace Zapalap.GeoChat.Api
 
             var geoChatActorSystem = ActorSystem.Create("GeoChat");
 
-            for (int i = 1; i <= 12; i++)
+            for (int i = 1; i <= 6; i++)
             {
                 geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster(i)), $"RegionMaster:{i}");
             }

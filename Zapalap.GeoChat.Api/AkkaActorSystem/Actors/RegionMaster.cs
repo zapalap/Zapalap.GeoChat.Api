@@ -30,7 +30,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
                 foreach (var user in Context.GetChildren())
                 {
-                    user.Tell(new IncomingText($"A new user has registered in our region: {message.UserName}"));
+                    user.Tell(new IncomingText($"A new user has registered in our region - {message.UserName}", Context.Self.Path.Name, RegionId));
                 }
 
                 return true;
@@ -43,7 +43,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
         {
             foreach (var user in Context.GetChildren())
             {
-                user.Tell(new IncomingText($"[Region {RegionId}] {Context.Sender.Path.Name}: {message.Text}"));
+                user.Tell(new IncomingText(message.Text, Context.Sender.Path.Name.Split(':').Last(), RegionId));
             }
 
             return true;

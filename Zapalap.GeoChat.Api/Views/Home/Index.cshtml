@@ -9,39 +9,69 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
-            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
-            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="~/lib/cssmap/jquery.cssmap.min.js"></script>
+    <script type="text/javascript" src="~/lib/cssmap/includes/script.js"></script>
+
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
     <script src="~/lib/signalr.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="~/lib/cssmap/includes/style.css" media="all" />
+    <link rel="stylesheet" type="text/css" href="~/lib/cssmap/cssmap-continents/cssmap-continents.css" media="screen" />
 
     <title>Index</title>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Circle-icons-chat.svg/2000px-Circle-icons-chat.svg.png" width="40" height="40" alt="GeoChat" />
+            </a>
+            <nav>
+                <span style="color:white;"><big>GeoChat</big></span>
+            </nav>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row shadow" style="padding:15px;margin:10px 30px 10px 30px">
+            <div class="form-group col-12">
+                <input name="user-name" type="text" class="form-control" id="user-name" placeholder="Username" style="font-size:22px;text-align:center;" />
+            </div>
+            <div class="col">
+                <div id="map-continents">
+                    <ul class="continents">
+                        <li class="c1" data-region="1"><a href="#africa">Africa</a></li>
+                        <li class="c2" data-region="2"><a href="#asia">Asia</a></li>
+                        <li class="c3" data-region="3"><a href="#australia">Australia</a></li>
+                        <li class="c4" data-region="4"><a href="#europe">Europe</a></li>
+                        <li class="c5" data-region="5"><a href="#north-america">North America</a></li>
+                        <li class="c6" data-region="6"><a href="#south-america">South America</a></li>
+                    </ul>
+                </div>
+            </div>
 
-    <div class="h1">GeoChat</div>
-    <row>
-        <div class="region-container col-md-6">
-            <input name="user-name" type="text" class="form-control" id="user-name" placeholder="User name" />
-            <input name="region-number" type="text" class="form-control" id="region-number" placeholder="Region (1..12)" />
-            <button class="btn btn-info" id="join-region-btn" style="margin-top:15px">Join</button>
+            <div class="col">
+                <div id="chat-window" style="max-height:400px;overflow:auto;"></div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <textarea cols="20" rows="3" id="chat-input" name="chat-input" type="text" class="form-control" style="font-size:28px;"></textarea>
+                    <button class="btn btn-success btn-block" id="send-chat-btn" style="margin-top:15px">Send</button>
+                </div>
+            </div>
         </div>
 
-        <div class="chat-input-container col-md-6" style="margin-top:12px;">
-            <textarea cols="20" rows="5" id="chat-input" name="chat-input" type="text" class="form-control"></textarea>
-            <button class="btn btn-success" id="send-chat-btn" style="margin-top:15px">Send</button>
-        </div>
-    </row>
+    </div>
+    <div id="message-template" class="shadow-small" style="padding:6px;margin:5px;display:none;">
+        <img src="data:image/png;base64,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" width="30" height="30" style="display:inline" />
+        <span class="user-name"></span>
+        <span class="user-region"></span>
+        <span class="message-text"></span>
+    </div>
 
-    <row>
-        <div class="chat-container col-md-12">
-            <div id="chat-window" style="height:400px; padding:10px; overflow:auto;border:1px solid #e3e3e3;margin-top:15px"></div>
-        </div>
-    </row>
-
-    <div id="message-template" style="padding:3px;margin:3px; border:1px solid #e3e3e3;display:none;"></div>
     <script>
         $(document).ready(function () {
+
+            var selectedRegion = 1;
 
             const connection = new signalR.HubConnectionBuilder()
                 .withUrl("/geochathub")
@@ -52,40 +82,57 @@
                 console.error(err.toString());
             });
 
-            connection.on("IncomingMessage", function (text) {
-                addMessage(text);
+            connection.on("IncomingMessage", function (text, senderName, region) {
+                var message = {
+                    sender: senderName,
+                    region: region,
+                    text: text
+                };
+
+                addMessage(message);
             });
 
-            var joinRegion = function () {
+            var joinRegion = function (region) {
                 var userName = $("#user-name").val();
-                var regionNumber = $("#region-number").val();
 
-                connection.invoke("JoinRegion", userName, regionNumber)
+                connection.invoke("JoinRegion", userName, region)
             };
 
             var addMessage = function (message) {
 
                 var $template = $('#message-template').clone();
                 $template.removeAttr('id');
-                $template.append(message);
+
+                $template.find('.user-name').append(message.sender);
+                $template.find('.user-region').append(message.region);
+                $template.find('.message-text').append(message.text);
                 $('#chat-window').append($template);
                 $template.fadeIn();
             }
 
             var sendToRegion = function () {
                 var userName = $("#user-name").val();
-                var regionNumber = $("#region-number").val();
                 var text = $("#chat-input").val();
 
-                connection.invoke('SendMessage', text, userName, regionNumber);
+                connection.invoke('SendMessage', text, userName, selectedRegion);
             }
 
             $("#join-region-btn").click(function () {
-                joinRegion();
+                var regionNumber = $("#region-number").val();
+                joinRegion(regionNumber);
             });
 
             $("#send-chat-btn").click(function () {
                 sendToRegion();
+            });
+
+            $("#map-continents").CSSMap({
+                "size": 850,
+                'onClick': function (regionListItem) {
+                    var region = $(regionListItem).data('region');
+                    selectedRegion = region;
+                    joinRegion(region)
+                }
             });
 
         });
