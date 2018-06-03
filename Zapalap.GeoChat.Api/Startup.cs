@@ -50,7 +50,8 @@ namespace Zapalap.GeoChat.Api
                 app.UseDeveloperExceptionPage();
             }
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvcWithDefaultRoute();
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<GeoChatHub>("/geochathub");
