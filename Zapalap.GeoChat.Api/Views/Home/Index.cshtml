@@ -1,0 +1,96 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"
+            integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ="
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <script src="~/lib/signalr.min.js"></script>
+
+    <title>Index</title>
+</head>
+<body>
+
+    <div class="h1">GeoChat</div>
+    <row>
+        <div class="region-container col-md-6">
+            <input name="user-name" type="text" class="form-control" id="user-name" placeholder="User name" />
+            <input name="region-number" type="text" class="form-control" id="region-number" placeholder="Region (1..12)" />
+            <button class="btn btn-info" id="join-region-btn" style="margin-top:15px">Join</button>
+        </div>
+
+        <div class="chat-input-container col-md-6" style="margin-top:12px;">
+            <textarea cols="20" rows="5" id="chat-input" name="chat-input" type="text" class="form-control"></textarea>
+            <button class="btn btn-success" id="send-chat-btn" style="margin-top:15px">Send</button>
+        </div>
+    </row>
+
+    <row>
+        <div class="chat-container col-md-12">
+            <div id="chat-window" style="height:400px; padding:10px; overflow:auto;border:1px solid #e3e3e3;margin-top:15px"></div>
+        </div>
+    </row>
+
+    <div id="message-template" style="padding:3px;margin:3px; border:1px solid #e3e3e3;display:none;"></div>
+    <script>
+        $(document).ready(function () {
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/geochathub")
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+
+            connection.start().catch(function (err) {
+                console.error(err.toString());
+            });
+
+            connection.on("IncomingMessage", function (text) {
+                addMessage(text);
+            });
+
+            var joinRegion = function () {
+                var userName = $("#user-name").val();
+                var regionNumber = $("#region-number").val();
+
+                connection.invoke("JoinRegion", userName, regionNumber)
+            };
+
+            var addMessage = function (message) {
+
+                var $template = $('#message-template').clone();
+                $template.removeAttr('id');
+                $template.append(message);
+                $('#chat-window').append($template);
+                $template.fadeIn();
+            }
+
+            var sendToRegion = function () {
+                var userName = $("#user-name").val();
+                var regionNumber = $("#region-number").val();
+                var text = $("#chat-input").val();
+
+                connection.invoke('SendMessage', text, userName, regionNumber);
+            }
+
+            $("#join-region-btn").click(function () {
+                joinRegion();
+            });
+
+            $("#send-chat-btn").click(function () {
+                sendToRegion();
+            });
+
+        });
+    </script>
+</body>
+
+
+</html>

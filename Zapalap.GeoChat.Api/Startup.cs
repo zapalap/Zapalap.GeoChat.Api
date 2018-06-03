@@ -11,11 +11,14 @@ using Microsoft.Extensions.Options;
 using Akka;
 using Akka.Actor;
 using Zapalap.GeoChat.Api.AkkaActorSystem.Actors;
+using Zapalap.GeoChat.Api.Hubs;
 
 namespace Zapalap.GeoChat.Api
 {
     public class Startup
     {
+        public static IServiceProvider ServiceProvider;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -27,6 +30,7 @@ namespace Zapalap.GeoChat.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSignalR();
 
             var geoChatActorSystem = ActorSystem.Create("GeoChat");
 
@@ -45,8 +49,14 @@ namespace Zapalap.GeoChat.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseStaticFiles();
             app.UseMvc();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<GeoChatHub>("/geochathub");
+            });
+
+            ServiceProvider = app.ApplicationServices;
         }
     }
 }

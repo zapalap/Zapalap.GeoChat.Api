@@ -1,22 +1,30 @@
 ﻿using Akka.Actor;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Zapalap.GeoChat.Api.AkkaActorSystem.Messages;
+using Zapalap.GeoChat.Api.Hubs;
 
 namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 {
     public class UserWorker : ReceiveActor
     {
         private readonly string userName;
+        private IHubContext<GeoChatHub> HubContext;
+
+        protected override void PreStart()
+        {
+            HubContext = Startup.ServiceProvider.GetService(typeof(IHubContext<GeoChatHub>)) as IHubContext<GeoChatHub>;
+        }
 
         public UserWorker(string userName)
         {
             this.userName = userName;
 
-            Receive<IncomingText>(HandleIncomingText);
+            Receive<IncomingText>(async f => await HandleIncomingText(f));
             Receive<SendText>(HandleSendText);
         }
 
@@ -26,9 +34,11 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             return true;
         }
 
-        private bool HandleIncomingText(IncomingText message)
+        private async Task<bool> HandleIncomingText(IncomingText message)
         {
             Debug.WriteLine($"{userName}: Received -> {message.Text}");
+
+            await HubContext.Clients.Group($"{Context.Parent.Path.Name}/{Context.Self.Path.Name}").SendAsync("IncomingMessage", message.Text);
             return true;
         }
     }

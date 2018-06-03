@@ -43,7 +43,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
         {
             foreach (var user in Context.GetChildren())
             {
-                user.Tell(new IncomingText($"[Region {RegionId}] {Context.Sender.Path}: {message.Text}"));
+                user.Tell(new IncomingText($"[Region {RegionId}] {Context.Sender.Path.Name}: {message.Text}"));
             }
 
             return true;
