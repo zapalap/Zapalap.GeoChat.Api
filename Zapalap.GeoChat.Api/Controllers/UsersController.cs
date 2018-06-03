@@ -22,7 +22,7 @@ namespace Zapalap.GeoChat.Api.Controllers
         }
 
         [HttpPost("regions/{region}")]
-        public IActionResult PostUsers(string userName, int region)
+        public IActionResult PostUsers(string userName, string region)
         {
             var message = new NewRegionUser(userName);
             var selection = ActorSystem.ActorSelection($"/user/RegionMaster:{region}");
@@ -32,7 +32,7 @@ namespace Zapalap.GeoChat.Api.Controllers
         }
 
         [HttpPost("{userName}/regions/{region}/shouts")]
-        public IActionResult Shout([FromRoute]string userName, [FromRoute]int region, [FromBody]ShoutModel shout)
+        public IActionResult Shout([FromRoute]string userName, [FromRoute]string region, [FromBody]ShoutModel shout)
         {
             var message = new SendText(shout.Text);
             var selection = ActorSystem.ActorSelection($"/user/RegionMaster:{region}/User:{userName}");

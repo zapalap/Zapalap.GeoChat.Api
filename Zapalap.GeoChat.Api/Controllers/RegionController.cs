@@ -21,7 +21,7 @@ namespace Zapalap.GeoChat.Api.Controllers
         }
 
         [HttpGet("{region}/users")]
-        public async Task<IActionResult> GetUserList(int region)
+        public async Task<IActionResult> GetUserList(string region)
         {
             var message = new ListUsers();
             var regionMaster = ActorSystem.ActorSelection($"/user/RegionMaster:{region}");

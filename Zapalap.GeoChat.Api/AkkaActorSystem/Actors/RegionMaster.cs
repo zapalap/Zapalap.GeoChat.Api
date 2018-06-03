@@ -9,11 +9,11 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 {
     public class RegionMaster : ReceiveActor
     {
-        private readonly int RegionId;
+        private readonly string Region;
 
-        public RegionMaster(int regionId)
+        public RegionMaster(string region)
         {
-            RegionId = regionId;
+            Region = region;
 
             Receive<NewRegionUser>(RegisterNewRegionUser);
             Receive<SendText>(HandleSendText);
@@ -30,7 +30,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
                 foreach (var user in Context.GetChildren())
                 {
-                    user.Tell(new IncomingText($"A new user has registered in our region - {message.UserName}", Context.Self.Path.Name, RegionId));
+                    user.Tell(new IncomingText($"A new user has registered in our region - {message.UserName}", $"{Region} Master", Region));
                 }
 
                 return true;
@@ -43,7 +43,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
         {
             foreach (var user in Context.GetChildren())
             {
-                user.Tell(new IncomingText(message.Text, Context.Sender.Path.Name.Split(':').Last(), RegionId));
+                user.Tell(new IncomingText(message.Text, Context.Sender.Path.Name.Split(':').Last(), Region));
             }
 
             return true;

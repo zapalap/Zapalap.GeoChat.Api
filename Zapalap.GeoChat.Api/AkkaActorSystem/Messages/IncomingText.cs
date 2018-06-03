@@ -9,13 +9,13 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Messages
     {
         public  string Text { get; }
         public  string SenderName { get; }
-        public  int RegionId { get; }
+        public  string Region { get; }
 
-        public IncomingText(string text, string senderName, int regionId)
+        public IncomingText(string text, string senderName, string region)
         {
             Text = text;
             SenderName = senderName;
-            RegionId = regionId;
+            Region = region;
         }
     }
 }

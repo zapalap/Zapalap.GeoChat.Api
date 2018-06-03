@@ -34,10 +34,12 @@ namespace Zapalap.GeoChat.Api
 
             var geoChatActorSystem = ActorSystem.Create("GeoChat");
 
-            for (int i = 1; i <= 6; i++)
-            {
-                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster(i)), $"RegionMaster:{i}");
-            }
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("Africa")), $"RegionMaster:Africa");
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("Asia")), $"RegionMaster:Asia");
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("Australia")), $"RegionMaster:Australia");
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("Europe")), $"RegionMaster:Europe");
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("NorthAmerica")), $"RegionMaster:NorthAmerica");
+                geoChatActorSystem.ActorOf(Props.Create(() => new RegionMaster("SouthAmerica")), $"RegionMaster:SouthAmerica");
 
             services.AddSingleton(geoChatActorSystem);
         }

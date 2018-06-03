@@ -38,7 +38,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
         {
             Debug.WriteLine($"{userName}: Received -> {message.Text}");
 
-            await HubContext.Clients.Group($"{Context.Parent.Path.Name}/{Context.Self.Path.Name}").SendAsync("IncomingMessage", message.Text, message.SenderName, message.RegionId);
+            await HubContext.Clients.Group($"{Context.Parent.Path.Name}/{Context.Self.Path.Name}").SendAsync("IncomingMessage", message.Text, message.SenderName, message.Region);
             return true;
         }
     }

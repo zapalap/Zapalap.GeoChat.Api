@@ -17,14 +17,14 @@ namespace Zapalap.GeoChat.Api.Hubs
             ActorSystem = actorSystem;
         }
 
-        public async Task SendMessage(string text, string userName, int region)
+        public async Task SendMessage(string text, string userName, string region)
         {
             var message = new SendText(text);
             var selection = ActorSystem.ActorSelection($"/user/RegionMaster:{region}/User:{userName}");
             selection.Tell(message);
         }
 
-        public async Task JoinRegion(string userName, int region)
+        public async Task JoinRegion(string userName, string region)
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, $"RegionMaster:{region}/User:{userName}");
 
