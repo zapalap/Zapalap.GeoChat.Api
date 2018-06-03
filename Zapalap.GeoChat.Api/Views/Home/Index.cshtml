@@ -32,7 +32,7 @@
         </div>
     </nav>
     <div class="container-fluid">
-        <div class="row shadow" style="padding:15px;margin:10px 30px 10px 30px">
+        <div class="row shadow" style="padding:30px 15px 15px 15px;margin:50px 30px 10px 30px">
             <div class="form-group col-12">
                 <input name="user-name" type="text" class="form-control" id="user-name" placeholder="Username" style="font-size:22px;text-align:center;" />
             </div>
@@ -117,6 +117,7 @@
                 var text = $("#chat-input").val();
 
                 connection.invoke('SendMessage', text, userName, selectedRegion);
+                $('#chat-input').val('');
             }
 
             $("#join-region-btn").click(function () {
