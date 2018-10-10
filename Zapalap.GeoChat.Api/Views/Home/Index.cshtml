@@ -54,7 +54,7 @@
             </div>
             <div class="col-12">
                 <div class="form-group">
-                    <textarea cols="20" rows="3" id="chat-input" name="chat-input" type="text" class="form-control" style="font-size:28px;"></textarea>
+                    <input id="chat-input" name="chat-input" type="text" class="form-control" style="font-size:28px;" />
                     <button class="btn btn-success btn-block" id="send-chat-btn" style="margin-top:15px">Send</button>
                 </div>
             </div>
@@ -110,6 +110,7 @@
                 $template.find('.message-text').append(message.text);
                 $('#chat-window').append($template);
                 $template.fadeIn();
+                $('#chat-window').scrollTop($('#chat-window')[0].scrollHeight);
             }
 
             var sendToRegion = function () {
@@ -127,6 +128,12 @@
 
             $("#send-chat-btn").click(function () {
                 sendToRegion();
+            });
+
+            $("#chat-input").on('keypress', function (e) {
+                if (e.which === 13) {
+                    sendToRegion();
+                }
             });
 
             $("#map-continents").CSSMap({
