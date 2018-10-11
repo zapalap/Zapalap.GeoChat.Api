@@ -17,7 +17,6 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
             Receive<NewRegionUser>(RegisterNewRegionUser);
             Receive<SendText>(HandleSendText);
-            Receive<ListUsers>(HandleListUsers);
         }
 
         private bool RegisterNewRegionUser(NewRegionUser message)
@@ -46,19 +45,6 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
                 user.Tell(new IncomingText(message.Text, Context.Sender.Path.Name.Split(':').Last(), Region));
             }
 
-            return true;
-        }
-
-        private bool HandleListUsers(ListUsers message)
-        {
-            var userNames = new List<string>();
-
-            foreach (var user in Context.GetChildren())
-            {
-                userNames.Add(user.Path.Name);
-            }
-
-            Sender.Tell(new IncomingUserList(userNames));
             return true;
         }
     }
