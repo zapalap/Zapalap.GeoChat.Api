@@ -17,7 +17,9 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
         protected override void PreStart()
         {
-            HubContext = Startup.ServiceProvider.GetService(typeof(IHubContext<GeoChatHub>)) as IHubContext<GeoChatHub>;
+            HubContext = Startup
+                .ServiceProvider
+                .GetService(typeof(IHubContext<GeoChatHub>)) as IHubContext<GeoChatHub>;
         }
 
         public UserWorker(string userName)
@@ -36,9 +38,11 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
         private async Task<bool> HandleIncomingText(IncomingText message)
         {
-            Debug.WriteLine($"{userName}: Received -> {message.Text}");
+            await HubContext
+                .Clients
+                .Group($"{Context.Parent.Path.Name}/{Context.Self.Path.Name}")
+                .SendAsync("IncomingMessage", message.Text, message.SenderName, message.Region);
 
-            await HubContext.Clients.Group($"{Context.Parent.Path.Name}/{Context.Self.Path.Name}").SendAsync("IncomingMessage", message.Text, message.SenderName, message.Region);
             return true;
         }
     }
