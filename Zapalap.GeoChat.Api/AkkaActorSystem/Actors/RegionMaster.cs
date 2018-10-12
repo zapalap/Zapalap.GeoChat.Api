@@ -17,7 +17,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             Region = region;
 
             Receive<NewRegionUser>(RegisterNewRegionUser);
-            Receive<SendText>(HandleSendText);
+            Receive<OutgoingText>(HandleOutgoingText);
         }
 
         private bool RegisterNewRegionUser(NewRegionUser message)
@@ -41,7 +41,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             return false;
         }
 
-        private bool HandleSendText(SendText message)
+        private bool HandleOutgoingText(OutgoingText message)
         {
             if (HandleCommand(message))
                 return true;
@@ -54,7 +54,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             return true;
         }
 
-        private bool HandleCommand(SendText message)
+        private bool HandleCommand(OutgoingText message)
         {
             if (message.Text.StartsWith("/countusers"))
             {

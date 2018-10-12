@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace Zapalap.GeoChat.Api.AkkaActorSystem.Messages
 {
-    public class SendText
+    public class OutgoingText
     {
         public string Text { get; }
 
-        public SendText(string text)
+        public OutgoingText(string text)
         {
             Text = text;
         }

@@ -19,7 +19,7 @@ namespace Zapalap.GeoChat.Api.Hubs
 
         public async Task SendMessage(string text, string userName, string region)
         {
-            var message = new SendText(text);
+            var message = new OutgoingText(text);
             var selection = ActorSystem.ActorSelection($"/user/RegionMaster:{region}/User:{userName}");
             selection.Tell(message);
         }

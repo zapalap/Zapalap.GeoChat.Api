@@ -27,10 +27,10 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             this.userName = userName;
 
             Receive<IncomingText>(async f => await HandleIncomingText(f));
-            Receive<SendText>(HandleSendText);
+            Receive<OutgoingText>(HandleOutgoingText);
         }
 
-        private bool HandleSendText(SendText message)
+        private bool HandleOutgoingText(OutgoingText message)
         {
             Context.Parent.Tell(message);
             return true;
