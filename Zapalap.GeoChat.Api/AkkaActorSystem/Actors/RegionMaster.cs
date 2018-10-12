@@ -10,6 +10,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
     public class RegionMaster : ReceiveActor
     {
         private readonly string Region;
+        private int ActiveUsers = 0;
 
         public RegionMaster(string region)
         {
@@ -27,6 +28,8 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             {
                 Context.ActorOf(Props.Create(() => new UserWorker(message.UserName)), $"User:{message.UserName}");
 
+                ActiveUsers++;
+
                 foreach (var user in Context.GetChildren())
                 {
                     user.Tell(new IncomingText($"A new user has registered in our region - {message.UserName}", $"{Region} Master", Region));
@@ -40,12 +43,26 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
 
         private bool HandleSendText(SendText message)
         {
+            if (HandleCommand(message))
+                return true;
+
             foreach (var user in Context.GetChildren())
             {
                 user.Tell(new IncomingText(message.Text, Context.Sender.Path.Name.Split(':').Last(), Region));
             }
 
             return true;
+        }
+
+        private bool HandleCommand(SendText message)
+        {
+            if (message.Text.StartsWith("/countusers"))
+            {
+                Context.Sender.Tell(new IncomingText($"Currently there are {ActiveUsers} active users in {Region}", $"{Region} Master", Region));
+                return true;
+            }
+
+            return false;
         }
     }
 }
