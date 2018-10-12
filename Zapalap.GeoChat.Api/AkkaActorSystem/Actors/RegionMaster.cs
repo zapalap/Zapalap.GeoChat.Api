@@ -11,6 +11,7 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
     {
         private readonly string Region;
         private int ActiveUsers = 0;
+        private int ActiveUsersNotificationInterval = 10000;
 
         public RegionMaster(string region)
         {
@@ -29,6 +30,17 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
                 Context.ActorOf(Props.Create(() => new UserWorker(message.UserName)), $"User:{message.UserName}");
 
                 ActiveUsers++;
+
+                if (ActiveUsers % ActiveUsersNotificationInterval == 0)
+                {
+                    foreach (var user in Context.GetChildren())
+                    {
+                        user.Tell(new IncomingText($"Active users in region are over {ActiveUsers}", $"{Region} Master", Region));
+                    }
+                }
+
+                if (message.Silent)
+                    return true;
 
                 foreach (var user in Context.GetChildren())
                 {
@@ -59,6 +71,22 @@ namespace Zapalap.GeoChat.Api.AkkaActorSystem.Actors
             if (message.Text.StartsWith("/countusers"))
             {
                 Context.Sender.Tell(new IncomingText($"Currently there are {ActiveUsers} active users in {Region}", $"{Region} Master", Region));
+                return true;
+            }
+
+            if (message.Text.StartsWith("/addmany"))
+            {
+                var command = message.Text.Split(" ");
+                int howMany = 0;
+
+                if (command.Length >= 2)
+                    int.TryParse(command[1], out howMany);
+
+                for (int i = 0; i < howMany; i++)
+                {
+                    Context.Self.Tell(new NewRegionUser($"OneOfMany{i.ToString()}", true));
+                }
+
                 return true;
             }
 
